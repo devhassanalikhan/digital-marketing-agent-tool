@@ -1,0 +1,10 @@
+
+id: mcp.unsplash
+title: Unsplash API
+description: MCP server for Unsplash API
+auth:
+  type: apikey
+  api_key_env: UNSPLASH_ACCESS_KEY
+api:
+  base_url: https://api.unsplash.com
+max_calls_per_minute: 50

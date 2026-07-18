@@ -4,10 +4,16 @@ from fastapi.testclient import TestClient
 
 from core.orchestrator.resolver import app
 
-# Initialize TestClient for A2A resolver with mounted MCP stubs
-client = TestClient(app)
 
-def test_semrush_mcp_stub_mount():
+@pytest.fixture
+def client():
+    # Using TestClient as a context manager triggers FastAPI's startup event,
+    # which is what mounts the MCP stub apps under /mcp/{id}.
+    with TestClient(app) as c:
+        yield c
+
+
+def test_semrush_mcp_stub_mount(client):
     payload = {"params": {"keyword": "example"}}
     response = client.post("/mcp/semrush/search_products", json=payload)
     assert response.status_code == 200
@@ -17,7 +23,7 @@ def test_semrush_mcp_stub_mount():
     assert data["capability"] == "search_products"
     assert data["data"] == payload["params"]
 
-def test_invoke_semrush_mcp_integration():
+def test_invoke_semrush_mcp_integration(client):
     payload = {"agent": "mcp.semrush", "capability": "search_products", "params": {"keyword": "test"}}
     response = client.post("/invoke", json=payload)
     assert response.status_code == 200

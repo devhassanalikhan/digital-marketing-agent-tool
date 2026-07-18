@@ -74,9 +74,10 @@ class TestBackgroundExecution(unittest.TestCase):
         
         # Create mock components
         self.task_scheduler = TaskScheduler(self.config.get('task_scheduler', {}))
+        self.task_scheduler.schedule_task = MagicMock(return_value=True)
         self.event_manager = EventManager(self.config.get('event_manager', {}))
         self.recovery_manager = RecoveryManager(self.config.get('recovery_manager', {}))
-        
+
         # Patch the run method of TaskScheduler to prevent it from running in the background
         self.task_scheduler_run_patch = patch.object(
             TaskScheduler, 'run', 

@@ -1,0 +1,10 @@
+
+id: mcp.openai
+title: OpenAI Assistants v2
+description: MCP server for OpenAI Assistants v2
+auth:
+  type: apikey
+  api_key_env: OPENAI_API_KEY
+api:
+  base_url: https://api.openai.com/v1
+max_calls_per_minute: 60

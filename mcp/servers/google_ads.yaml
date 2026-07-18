@@ -1,0 +1,11 @@
+
+id: mcp.google_ads
+title: Google Ads v14
+description: MCP server for Google Ads v14
+auth:
+  type: oauth2
+  client_id_env: GOOGLE_ADS_CLIENT_ID
+  client_secret_env: GOOGLE_ADS_CLIENT_SECRET
+api:
+  base_url: https://googleads.googleapis.com/v14
+max_calls_per_minute: 120

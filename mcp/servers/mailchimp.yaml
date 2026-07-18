@@ -1,0 +1,10 @@
+
+id: mcp.mailchimp
+title: Mailchimp v3 API
+description: MCP server for Mailchimp v3 API
+auth:
+  type: apikey
+  api_key_env: MAILCHIMP_API_KEY
+api:
+  base_url: https://usX.api.mailchimp.com/3.0
+max_calls_per_minute: 60

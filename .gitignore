@@ -1,3 +1,6 @@
+# Auto-generated at runtime
+config/default.yaml
+
 # Python
 __pycache__/
 *.py[cod]

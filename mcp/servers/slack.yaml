@@ -1,0 +1,10 @@
+
+id: mcp.slack
+title: Slack Web API
+description: MCP server for Slack Web API
+auth:
+  type: apikey
+  api_key_env: SLACK_API_TOKEN
+api:
+  base_url: https://slack.com/api
+max_calls_per_minute: 100

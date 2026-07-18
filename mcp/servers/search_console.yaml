@@ -1,0 +1,11 @@
+
+id: mcp.search_console
+title: Google Search Console API
+description: MCP server for Google Search Console API
+auth:
+  type: oauth2
+  client_id_env: GSC_CLIENT_ID
+  client_secret_env: GSC_CLIENT_SECRET
+api:
+  base_url: https://searchconsole.googleapis.com/v1
+max_calls_per_minute: 60

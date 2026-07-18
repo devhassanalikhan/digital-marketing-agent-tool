@@ -1,0 +1,10 @@
+
+id: mcp.hubspot
+title: HubSpot CRM API
+description: MCP server for HubSpot CRM API
+auth:
+  type: apikey
+  api_key_env: HUBSPOT_API_KEY
+api:
+  base_url: https://api.hubapi.com
+max_calls_per_minute: 60

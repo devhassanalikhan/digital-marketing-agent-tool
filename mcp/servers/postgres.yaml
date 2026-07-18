@@ -1,0 +1,10 @@
+
+id: mcp.postgres
+title: Postgres Analytics
+description: MCP server for Postgres Analytics
+auth:
+  type: env
+  conn_env: POSTGRES_URL
+api:
+  base_url: 
+max_calls_per_minute: 1000

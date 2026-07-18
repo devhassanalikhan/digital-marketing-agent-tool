@@ -14,8 +14,8 @@ from typing import Dict, List, Any, Optional, Union, Callable
 from datetime import datetime, timedelta
 
 # Import Git integration components
-from core.git.git_integration import GitIntegration
-from core.git.website_updater import WebsiteUpdater
+from core.git.multi_repo_git_manager import MultiRepoGitManager
+from core.git.multi_repo_website_updater import MultiRepoWebsiteUpdater
 
 # Import Background Execution Framework components
 from core.background_execution.task_scheduler import TaskScheduler
@@ -33,42 +33,49 @@ class ProcessOrchestrator:
     and self-healing capabilities.
     """
     
-    def __init__(self, config_path: Optional[str] = None):
+    def __init__(self,
+                 config_path: Optional[str] = None,
+                 config: Optional[Dict[str, Any]] = None,
+                 task_scheduler: Optional[TaskScheduler] = None,
+                 event_manager: Optional[EventManager] = None,
+                 recovery_manager: Optional[RecoveryManager] = None):
         """
         Initialize the process orchestrator.
-        
+
         Args:
             config_path: Path to configuration file (optional)
+            config: Configuration dict, takes precedence over config_path (optional)
+            task_scheduler: Pre-built TaskScheduler to use instead of creating one (optional)
+            event_manager: Pre-built EventManager to use instead of creating one (optional)
+            recovery_manager: Pre-built RecoveryManager to use instead of creating one (optional)
         """
-        self.config = self._load_config(config_path)
+        self.config = config if config is not None else self._load_config(config_path)
         self.processes = {}
-        self.running_processes = set()
+        self.running_processes = {}
         self.process_history = {}
-        
-        # Initialize Git integration
+        self.dependencies = {}
+        self.event_hooks = {}
+
+        # Initialize Git integration (multi-repository)
         git_config_path = self.config.get('git_integration', {}).get(
             'config_path', 'core/git/git_config.json'
         )
-        self.git_integration = GitIntegration(config_path=git_config_path)
-        
-        # Initialize website updater
-        self.website_updater = WebsiteUpdater(self.git_integration)
-        
-        # Initialize Task Scheduler
-        self.task_scheduler = TaskScheduler(self.config.get('task_scheduler', {}))
-        
-        # Initialize Event Manager
-        self.event_manager = EventManager(self.config.get('event_manager', {}))
-        
-        # Initialize Recovery Manager
-        self.recovery_manager = RecoveryManager(self.config.get('recovery_manager', {}))
-        
+        self.git_integration = MultiRepoGitManager(config_path=git_config_path)
+
+        # Initialize website updater (multi-repository)
+        self.website_updater = MultiRepoWebsiteUpdater(self.git_integration)
+
+        # Use injected components if provided, otherwise create them
+        self.task_scheduler = task_scheduler or TaskScheduler(self.config.get('task_scheduler', {}))
+        self.event_manager = event_manager or EventManager(self.config.get('event_manager', {}))
+        self.recovery_manager = recovery_manager or RecoveryManager(self.config.get('recovery_manager', {}))
+
         # Register health checks
         self._register_health_checks()
-        
+
         # Register event handlers
         self._register_event_handlers()
-        
+
         logger.info("Process Orchestrator initialized with all components")
         
     def _load_config(self, config_path: Optional[str]) -> Dict[str, Any]:
@@ -334,9 +341,9 @@ class ProcessOrchestrator:
             self.processes[process_id]['last_status'] = 'error'
             
             # Handle retry logic
-            if self.processes[process_id]['retry_count'] < self.config['retry_attempts']:
+            if self.processes[process_id]['retry_count'] < self.config.get('retry_attempts', 3):
                 self.processes[process_id]['retry_count'] += 1
-                retry_delay = self.config['retry_delay']
+                retry_delay = self.config.get('retry_delay', 60)
                 logger.info(f"Scheduling retry for {process_id} in {retry_delay} seconds")
                 
                 # Schedule retry

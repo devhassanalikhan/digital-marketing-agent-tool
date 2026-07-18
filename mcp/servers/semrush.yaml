@@ -1,0 +1,10 @@
+
+id: mcp.semrush
+title: SEMrush Domain API
+description: MCP server for SEMrush Domain API
+auth:
+  type: apikey
+  api_key_env: SEMRUSH_API_KEY
+api:
+  base_url: https://api.semrush.com
+max_calls_per_minute: 30

@@ -1,0 +1,10 @@
+
+id: mcp.cloudflare_email
+title: Cloudflare Email Workers API
+description: MCP server for Cloudflare Email Workers API
+auth:
+  type: apikey
+  api_key_env: CLOUDFLARE_API_TOKEN
+api:
+  base_url: https://api.cloudflare.com/client/v4
+max_calls_per_minute: 60

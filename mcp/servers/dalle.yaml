@@ -1,0 +1,10 @@
+
+id: mcp.dalle
+title: DALL·E 3 API
+description: MCP server for DALL·E 3 API
+auth:
+  type: apikey
+  api_key_env: OPENAI_API_KEY
+api:
+  base_url: https://api.openai.com/v1/images
+max_calls_per_minute: 60

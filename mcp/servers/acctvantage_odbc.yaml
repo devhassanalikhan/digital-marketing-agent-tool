@@ -1,0 +1,10 @@
+
+id: mcp.acctvantage_odbc
+title: AcctVantage ODBC ERP
+description: MCP server for AcctVantage ODBC ERP
+auth:
+  type: env
+  conn_env: ACCTVANTAGE_DSN
+api:
+  base_url: 
+max_calls_per_minute: 100

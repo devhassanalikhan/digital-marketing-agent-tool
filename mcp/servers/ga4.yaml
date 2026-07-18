@@ -1,0 +1,11 @@
+
+id: mcp.ga4
+title: Google Analytics 4 Data API
+description: MCP server for Google Analytics 4 Data API
+auth:
+  type: oauth2
+  client_id_env: GA4_CLIENT_ID
+  client_secret_env: GA4_CLIENT_SECRET
+api:
+  base_url: https://analyticsdata.googleapis.com/v1beta
+max_calls_per_minute: 60

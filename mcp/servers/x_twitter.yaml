@@ -1,0 +1,10 @@
+
+id: mcp.x_twitter
+title: X (Twitter) API v2
+description: MCP server for X (Twitter) API v2
+auth:
+  type: apikey
+  api_key_env: TWITTER_BEARER_TOKEN
+api:
+  base_url: https://api.twitter.com/2
+max_calls_per_minute: 150

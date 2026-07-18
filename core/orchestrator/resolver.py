@@ -21,7 +21,7 @@ async def startup_event():
     await resolver.initialize()
     # Load MCP descriptors
     resolver.mcp_descriptors = []
-    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
+    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
     mcp_dir = os.path.join(project_root, 'mcp', 'servers')
     for yaml_file in glob.glob(os.path.join(mcp_dir, '*.yaml')):
         try:
@@ -63,10 +63,12 @@ async def invoke(inv: Invocation):
     mcp_ids = [d.get('id') for d in getattr(resolver, 'mcp_descriptors', [])]
     if inv.agent in mcp_ids:
         stub_id = inv.agent.split('.')[-1]
-        base_url = os.getenv("A2A_RESOLVER_BASE_URL", "http://localhost:8000")
-        url = f"{base_url}/mcp/{stub_id}/{inv.capability}"
+        url = f"/mcp/{stub_id}/{inv.capability}"
         try:
-            async with httpx.AsyncClient() as client:
+            # Route in-process via ASGI transport instead of a real network call,
+            # since the stub is mounted on this same app rather than a separate server.
+            transport = httpx.ASGITransport(app=app)
+            async with httpx.AsyncClient(transport=transport, base_url="http://internal") as client:
                 resp = await client.post(url, json={"params": inv.params})
             resp.raise_for_status()
             return resp.json()

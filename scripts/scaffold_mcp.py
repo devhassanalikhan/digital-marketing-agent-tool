@@ -51,14 +51,14 @@ app = FastAPI(title="{title} MCP Server")
 logger = logging.getLogger(__name__)
 
 # Rate limiter
-rate_limiter = RateLimiter(max_calls={max_calls}, period=60)
+rate_limiter = RateLimiter(max_per_minute={max_calls})
 
 class RequestModel(BaseModel):
     params: dict
 
 @app.post("/{{capability}}")
 async def handle(capability: str, req: RequestModel):
-    if not rate_limiter.allow():
+    if not await rate_limiter.acquire():
         raise HTTPException(status_code=429, detail="Rate limit exceeded")
     logger.info(f"Handling {mcp_id}.{{capability}} with params {{req.params}}")
     # TODO: Implement actual API calls
@@ -75,14 +75,14 @@ for svc in SERVICES:
         auth_fields = f"  conn_env: {svc['conn_env']}\n"
     # Write YAML descriptor
     yaml_path = os.path.join(MCP_DIR, f"{svc['id']}.yaml")
-    with open(yaml_path, 'w') as f:
+    with open(yaml_path, 'w', encoding='utf-8') as f:
         f.write(YAML_TEMPLATE.format(
             mcp_id=svc['mcp_id'], title=svc['title'], auth=svc['auth'],
             auth_fields=auth_fields, base_url=svc['base_url'], max_calls=svc['max_calls']
         ))
     # Write server stub
     server_path = os.path.join(MCP_DIR, f"{svc['id']}_server.py")
-    with open(server_path, 'w') as f:
+    with open(server_path, 'w', encoding='utf-8') as f:
         f.write(SERVER_TEMPLATE.format(
             title=svc['title'], mcp_id=svc['mcp_id'], max_calls=svc['max_calls']
         ))
