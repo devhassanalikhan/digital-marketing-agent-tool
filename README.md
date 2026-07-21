@@ -183,7 +183,7 @@ cp .env.example .env
 from autonomous_marketing_agent import MarketingOrchestrator
 
 # Initialize the orchestrator
-orchestrator = MarketingOrchestrator(config_path="config/default.yaml")
+orchestrator = MarketingOrchestrator(config="config/default.yaml")
 
 # Start the marketing automation process
 orchestrator.start()

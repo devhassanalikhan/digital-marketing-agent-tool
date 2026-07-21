@@ -288,42 +288,47 @@ class MarketingOrchestrator:
     4. Monitoring performance and adjusting strategies
     """
     
-    def __init__(self, config_path: str = None):
+    def __init__(self, config: Union[str, Dict[str, Any], None] = None):
         """
         Initialize the Marketing Orchestrator.
-        
+
         Args:
-            config_path: Path to the configuration file
+            config: Either a path to a YAML configuration file, or an
+                already-loaded configuration dict.
         """
         self.agents = {}
         self.workflows = {}
         self.active_campaigns = {}
         self.improvement_cycles = {}
         self.goals = {}
-        self.config = self._load_config(config_path)
+        self.config = self._load_config(config)
         self.knowledge_graph = None
         self.event_loop = asyncio.get_event_loop()
         logger.info("Marketing Orchestrator initialized")
-        
-    def _load_config(self, config_path: Optional[str]) -> Dict[str, Any]:
+
+    def _load_config(self, config: Union[str, Dict[str, Any], None]) -> Dict[str, Any]:
         """
-        Load configuration from a YAML file.
-        
+        Load configuration, accepting either a dict or a path to a YAML file.
+
         Args:
-            config_path: Path to the configuration file
-            
+            config: Either a path to a YAML configuration file, or an
+                already-loaded configuration dict.
+
         Returns:
             Dict containing configuration settings
         """
-        if not config_path:
-            logger.warning("No config path provided, using default settings")
+        if isinstance(config, dict):
+            return config
+
+        if not config:
+            logger.warning("No config provided, using default settings")
             return {}
-            
+
         try:
-            with open(config_path, 'r') as file:
-                config = yaml.safe_load(file)
-                logger.info(f"Configuration loaded from {config_path}")
-                return config
+            with open(config, 'r') as file:
+                loaded_config = yaml.safe_load(file)
+                logger.info(f"Configuration loaded from {config}")
+                return loaded_config or {}
         except Exception as e:
             logger.error(f"Failed to load configuration: {str(e)}")
             return {}
