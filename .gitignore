@@ -50,3 +50,9 @@ logs/
 *.csv
 *.dat
 *.out
+
+# Runtime-generated data files (default app config paths)
+/data/content_calendar.json
+/data/content_templates.json
+/data/keyword_database.json
+/data/knowledge_graph.json
